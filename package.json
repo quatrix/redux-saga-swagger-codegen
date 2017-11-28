@@ -1,0 +1,15 @@
+{
+  "name": "saga_codegen",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "nodemon": "^1.12.1",
+    "typescript": "^2.6.1",
+    "yamljs": "^0.3.0"
+  },
+  "scripts": {
+    "gen:watch": "nodemon -e mustache bin/gen.js samples/swagger.yml out/a.ts",
+    "tsc:watch": "tsc -w"
+  }
+}

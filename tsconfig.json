@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./", // enables relative imports to root
+    "outDir": "dist", // target for compiled files
+    "target": "es2017",
+    "module": "commonjs",
+    "allowJs": false, // include js files
+    "strict": true,                           
+    "alwaysStrict": true,  
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noEmitHelpers": true,
+    "noEmitOnError": true,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "pretty": true,
+    "noUnusedParameters": true,
+    "importHelpers": true,
+    //"noUnusedLocals": true,  
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "noFallthroughCasesInSwitch": true,
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true, 
+
+    "declaration": false,
+    "emitDecoratorMetadata": true
+  },
+  "include": [
+    "out/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,96 @@
+swagger: '2.0'
+info:
+  title: Sample API
+  description: Sample API
+  version: 1.0.0
+  contact:
+    email: hello@example.com
+basePath: /v2
+schemes:
+  - http
+  - https
+
+paths:
+  /ping:
+    get:
+      tags:
+        - app
+      summary: health
+      description: health
+      operationId: ping
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Pong'
+        '401':
+          description: unauthorized
+  /users:
+      #    get:
+      #      tags:
+      #        - app
+      #      summary: gets all users
+      #      description: gets all users
+      #      operationId: getUsers
+      #      produces:
+      #        - application/json
+      #      responses:
+      #        '200':
+      #          description: successful operation
+      #          schema:
+      #            $ref: '#/definitions/User'
+      #        '401':
+      #          description: unauthorized
+    post:
+      tags:
+        - app
+      summary: create a new user
+      description: create a new user
+      operationId: createUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: create a new user
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/User'
+        '401':
+          description: Unauthorized
+            
+
+definitions:
+  User:
+    type: object
+    required:
+    - name
+    - age
+    properties:
+      name:
+        description: user name
+        type: string
+      age:
+        description: user age
+        type: number
+      address:
+        description: users age
+        type: number
+
+  Pong:
+    type: object
+    required:
+    - result
+    properties:
+      result:
+        type: string
+    

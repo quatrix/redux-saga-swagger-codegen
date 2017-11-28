@@ -1,0 +1,47 @@
+
+
+interface {{&methodName}}Request {
+  type: 'API//{{&methodName}}//REQUEST',
+  {{#parameters}}
+   '{{&camelCaseName}}{{&cardinality}}': {{> type}}, 
+  {{/parameters}}
+}
+
+interface {{&methodName}}Success {
+  type: 'API//{{&methodName}}//SUCCESS',
+  {{#successType}}
+     {{> type}}, 
+  {{/successType}}
+}
+
+
+export class {{&methodName}}Action {
+  static get REQUEST() : string { return 'API//{{&methodName}}//REQUEST' }
+  static get SUCCESS() : string { return 'API//{{&methodName}}//SUCCESS' }
+  static get FAILURE() : string { return 'API//{{&methodName}}//FAILURE' }
+
+  static request (parameters: {
+    {{#parameters}}
+     '{{&camelCaseName}}{{&cardinality}}': {{> type}}, 
+    {{/parameters}}
+  }) : {{&methodName}}Request {
+
+  return {
+    ...parameters,
+    type: 'API//{{&methodName}}//REQUEST',
+  }
+  }
+
+  static success () : {{&successType}} {
+    return {
+        type: 'API//{{&methodName}}//SUCCESS',
+    }
+  }
+
+  static failure () {
+    return {
+        type: 'API//{{&methodName}}//FAILURE',
+    }
+  }
+}
+
