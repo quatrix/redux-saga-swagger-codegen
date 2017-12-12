@@ -1,24 +1,26 @@
-
-
-interface {{&methodName}}Request {
-  type: 'API//{{&methodName}}//REQUEST',
+export interface {{&methodName}}Request {
+  type: '{{&className}}//{{&methodName}}//REQUEST'
   {{#parameters}}
-   '{{&camelCaseName}}{{&cardinality}}': {{> type}}, 
+   '{{&camelCaseName}}{{&cardinality}}': {{> type}}
   {{/parameters}}
 }
 
-interface {{&methodName}}Success {
-  type: 'API//{{&methodName}}//SUCCESS',
-  {{#successType}}
-     {{> type}}, 
+export interface {{&methodName}}Success {
+  type: '{{&className}}//{{&methodName}}//SUCCESS'
+  payload: {{#successType}}
+     {{> type}} 
   {{/successType}}
 }
 
+export interface {{&methodName}}Failure {
+  type: '{{&className}}//{{&methodName}}//FAILURE'
+  error: any
+}
 
 export class {{&methodName}}Action {
-  static get REQUEST() : string { return 'API//{{&methodName}}//REQUEST' }
-  static get SUCCESS() : string { return 'API//{{&methodName}}//SUCCESS' }
-  static get FAILURE() : string { return 'API//{{&methodName}}//FAILURE' }
+  static get REQUEST() : string { return '{{&className}}//{{&methodName}}//REQUEST' }
+  static get SUCCESS() : string { return '{{&className}}//{{&methodName}}//SUCCESS' }
+  static get FAILURE() : string { return '{{&className}}//{{&methodName}}//FAILURE' }
 
   static request (parameters: {
     {{#parameters}}
@@ -27,20 +29,22 @@ export class {{&methodName}}Action {
   }) : {{&methodName}}Request {
 
   return {
+    type: '{{&className}}//{{&methodName}}//REQUEST',
     ...parameters,
-    type: 'API//{{&methodName}}//REQUEST',
   }
   }
 
-  static success () : {{&successType}} {
+  static success (payload: {{#successType}}{{>type}}{{/successType}}) : {{&methodName}}Success {
     return {
-        type: 'API//{{&methodName}}//SUCCESS',
+        payload,
+        type: '{{&className}}//{{&methodName}}//SUCCESS',
     }
   }
 
-  static failure () {
+  static failure (error: any) : {{&methodName}}Failure {
     return {
-        type: 'API//{{&methodName}}//FAILURE',
+        type: '{{&className}}//{{&methodName}}//FAILURE',
+        error,
     }
   }
 }

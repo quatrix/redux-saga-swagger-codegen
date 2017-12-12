@@ -1,0 +1,759 @@
+swagger: '2.0'
+info:
+  title: Refundit API
+  description: Refundit API
+  version: 1.0.0
+  contact:
+    email: eddie@refundit.tax
+basePath: /v2
+schemes:
+  - http
+  - https
+
+securityDefinitions:
+  deviceId:
+    type: apiKey
+    name: X-Device-Id
+    in: header
+
+paths:
+  /ping:
+    get:
+      tags:
+        - health 
+      summary: ping
+      description: returns a pong
+      operationId: ping
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApiResponse'
+
+  /backoffice/profile:
+    get:
+      tags:
+        - backoffice
+      summary: get a profile associated with deviceId
+      description: get a profile associated with deviceId
+      operationId: getProfile
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - name: deviceId
+        in: query
+        description: deviceId of client
+        required: true
+        type: string
+        format: uuid
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Profile'
+        '401':
+          description: Unauthorized
+
+
+  /backoffice/refund_request:
+    get:
+      tags:
+        - backoffice
+      summary: get a single refund request
+      description: get a single refund request
+      operationId: getRefundRequest
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - name: id
+        in: query
+        description: id of refund request
+        required: true
+        type: number
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/RefundRequest'
+        '401':
+          description: Unauthorized
+
+  /backoffice/refund_requests:
+    get:
+      tags:
+        - backoffice
+      summary: get refund requests
+      description: get refund requests
+      operationId: getRefundRequests
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RefundRequest'
+        '401':
+          description: Unauthorized
+
+  /backoffice/refund_request/update:
+    post:
+      tags:
+        - backoffice
+      summary: update a refund request
+      description: update a refund request
+      operationId: updateRefundRequest
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: Start a new refund request
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateRefundRequest"
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '401':
+          description: Unauthorized
+
+  /app/upload/tax_invoice:
+    post:
+      tags:
+        - app
+      summary: upload a tax_invoice
+      description: ''
+      operationId: uploadTaxInvoice
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+      - name: upfile
+        in: formData
+        type: file
+        required: true
+        description: The file to upload.
+      - name: get_full_ocr
+        in: query
+        description: adds rawOcr field to response with everything ocr service returned
+        default: false
+        type: boolean
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/UploadSuccess'
+        400:
+          description: Invalid signal annotation request
+      security:
+        - deviceId: []
+
+  /app/upload/boarding_pass:
+    post:
+      tags:
+        - app
+      summary: upload a boarding pass
+      description: 'upload boarding pass'
+      operationId: uploadBoardingPass
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+      - name: upfile
+        in: formData
+        type: file
+        required: true
+        description: The file to upload.
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/UploadSuccess'
+        400:
+          description: Invalid signal annotation request
+      security:
+        - deviceId: []
+
+  /app/upload/passport:
+    post:
+      tags:
+        - app
+      summary: upload a passport
+      description: 'upload a passport'
+      operationId: uploadPassport
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+      - name: upfile
+        in: formData
+        type: file
+        required: true
+        description: The file to upload.
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/UploadSuccess'
+        400:
+          description: Invalid signal annotation request
+      security:
+        - deviceId: []
+
+  /app/profile/send_validation_code:
+    post:
+      tags:
+        - app
+      summary: ask to send validation code
+      description: ask to send validation code
+      operationId: sendValidationCode 
+      produces:
+        - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: Create a profile
+        required: true
+        schema:
+          $ref: "#/definitions/ValidationRequest"
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/SendValidationCodeResponse'
+        '401':
+          description: Unauthorized
+      security:
+        - deviceId: []
+
+  /app/profile:
+    get:
+      tags:
+        - app
+      summary: returns profile associated with the current device id
+      description: returns profile associated with the current device id
+      operationId: getProfile
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Profile'
+        '404':
+          description: profile not found for current device id
+        '401':
+          description: Unauthorized
+      security:
+        - deviceId: []
+
+    post:
+      tags:
+        - app
+      summary: create profile
+      description: create profile
+      operationId: createProfile
+      produces:
+        - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: create profile
+        required: true
+        schema:
+          $ref: "#/definitions/CreateProfile"
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '401':
+          description: Unauthorized
+      security:
+        - deviceId: []
+
+  /app/boarding_pass:
+    get:
+      tags:
+        - app
+      summary: get last uploaded boarding pass for current refund request
+      description: get last uploaded boarding pass for current refund request
+      operationId: getBoardingPass
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BoardingPass'
+        '401':
+          description: Unauthorized
+        '404':
+          description: No boarding pass found
+      security:
+        - deviceId: []
+
+  /app/tax_invoices:
+    get:
+      tags:
+        - app
+      summary: get tax_invoices for refund request
+      description: get tax_invoice for specific refund request
+      operationId: getTaxInvoices
+      produces:
+        - application/json
+      parameters:
+      - name: get_full_ocr
+        in: query
+        description: adds _raw_ocr field to response with everything ocr service returned
+        default: false
+        type: boolean
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TaxInvoice'
+        '401':
+          description: Unauthorized
+      security:
+        - deviceId: []
+
+    delete:
+      tags:
+        - app
+      summary: delete a text invoice
+      description: get tax_invoice for specific refund request
+      operationId: deleteTaxInvoice
+      produces:
+        - application/json
+      parameters:
+      - name: id 
+        in: query
+        description: id of tax invoice to delete
+        type: number
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '401':
+          description: Unauthorized
+      security:
+        - deviceId: []
+
+
+  /app/refund_request/start:
+    post:
+      tags:
+        - app
+      summary: start a refund request
+      description: start a refund request
+      operationId: startRefundRequest
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: Start a new refund request
+        required: true
+        schema:
+          $ref: "#/definitions/NewRefundRequest"
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/RefundRequest'
+        '401':
+          description: Unauthorized
+      security:
+        - deviceId: []
+
+  /app/refund_request/ack:
+    post:
+      tags:
+        - app
+      summary: acknoladge the result of a refund request
+      description: acknoladge the result of a refund request
+      operationId: ackRefundRequest
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '401':
+          description: Unauthorized
+      security:
+        - deviceId: []
+
+  /app/refund_request/finish:
+    post:
+      tags:
+        - app
+      summary: finish a refund request
+      description: finish a refund request
+      operationId: finishRefundRequest
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '401':
+          description: Unauthorized
+      security:
+        - deviceId: []
+
+  /app/refund_request:
+    get:
+      tags:
+        - app
+      summary: get current refund request
+      description: get current refund request
+      operationId: getCurrentRefundRequest
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: bad request
+        '401':
+          description: authentication error
+      security:
+        - deviceId: []
+
+  /app/refund_requests:
+    get:
+      tags:
+        - app
+      summary: get refund requests
+      description: get a list of refund requests
+      operationId: getRefundRequests
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RefundRequest'
+        '401':
+          description: Unauthorized
+      security:
+        - deviceId: []
+            
+
+definitions:
+  UpdateRefundRequest:
+    type: object
+    properties:
+      refundRequestId:
+        description: id of refund request to update
+        type: number 
+      status:
+        description: new status of the refund request
+        type: string
+        enum:
+        - open
+        - pending
+        - approved
+        - denied
+  NewRefundRequest:
+    type: object
+    properties:
+      destination:
+        type: string
+      start:
+        type: string
+        format: date-time
+      end:
+        type: string
+        format: date-time
+
+  RefundRequest:
+    type: object
+    required:
+      - id
+      - destination
+      - status
+      - start
+      - end
+      - createdAt
+      - deviceId
+    properties:
+      id:
+        type: number 
+      destination:
+        type: string
+      status:
+        type: string
+      start:
+        type: string
+      end:
+        type: string
+      createdAt:
+        type: string
+      deviceId:
+        type: string
+      numberOfTaxInvoices:
+        type: number
+      taxInvoices:
+        type: array
+        items:
+          $ref: '#/definitions/TaxInvoice'
+      boardingPasses:
+        type: array
+        items:
+          $ref: '#/definitions/BoardingPass'
+
+  TaxInvoice:
+    type: object
+    required:
+    - id
+    - status
+    - uploadedAt
+    - url
+    - ocr
+
+    properties:
+      id: 
+        type: number
+      uploadedAt:
+        type: string
+        format: date-time
+      amount:
+        type: number
+        format: float
+      status:
+        type: string
+        enum:
+        - new
+        - valid
+        - invalid
+        - deleted
+      rawOcr:
+        type: object
+      ocr:
+        $ref: '#/definitions/Ocr'
+      url:
+        type: string
+        format: url
+
+  Passport:
+    type: object
+    required:
+    - id
+    - status
+    - uploadedAt
+    - url
+
+    properties:
+      id: 
+        type: number
+      uploadedAt:
+        type: string
+        format: date-time
+      status:
+        type: string
+        enum:
+        - new
+        - valid
+        - invalid
+        - deleted
+      url:
+        type: string
+        format: url
+
+  BoardingPass:
+    type: object
+    required:
+    - id
+    - status
+    - uploadedAt
+    - url
+
+    properties:
+      id: 
+        type: number
+      uploadedAt:
+        type: string
+        format: date-time
+      status:
+        type: string
+        enum:
+        - new
+        - valid
+        - invalid
+        - deleted
+      url:
+        type: string
+        format: url
+
+  OcrString:
+    type: object
+    required:
+    - value
+    - confidence
+    properties:
+      value:
+        type: string
+      confidence:
+        type: number
+        format: float
+
+  OcrNumber:
+    type: object
+    required:
+    - value
+    - confidence
+    properties:
+      value:
+        type: number
+      confidence:
+        type: number
+        format: float
+
+  OcrDate:
+    type: object
+    required:
+    - value
+    - confidence
+    properties:
+      value:
+        type: string
+        format: date-time
+      confidence:
+        type: number
+        format: float
+
+  Ocr:
+    type: object
+    required: 
+    - totalAmount
+    - totalTax
+    - merchantName
+    - date
+    properties:
+      totalAmount:
+        $ref: '#/definitions/OcrNumber'
+      totalTax:
+        $ref: '#/definitions/OcrNumber'
+      merchantName:
+        $ref: '#/definitions/OcrString'
+      date:
+        $ref: '#/definitions/OcrDate'
+
+  StatusLog:
+    type: object
+    properties:
+      timestamp:
+        type: string
+      status:
+        type: string
+      details:
+        type: string
+        
+  UploadSuccess:
+    type: object
+    required:
+    - id 
+    properties:
+      id:
+        type: number
+      rawOcr:
+        type: object
+      ocr:
+        type: object
+
+  Profile:
+    type: object
+    required:
+    - email
+    properties:
+      email:
+        type: string
+        format: email
+      passport:
+        $ref: '#/definitions/Passport'
+
+
+  ValidationRequest:
+    type: object
+    required:
+    - email
+    properties:
+      email:
+        type: string
+        format: email
+
+  CreateProfile:
+    type: object
+    required:
+    - email
+    - code
+    properties:
+      email:
+        type: string
+        format: email
+      country:
+        type: string
+      code:
+        type: number
+
+  ApiResponse:
+    type: object
+    required:
+    - result
+    properties:
+      result:
+        type: string
+      message:
+        type: string
+      status:
+        type: number
+
+  SendValidationCodeResponse:
+    type: object
+    required:
+    - exists
+    - message
+    properties:
+      message:
+        type: string
+      exists:
+        description: is email already exists for some profile
+        type: boolean

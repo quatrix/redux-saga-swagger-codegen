@@ -4,12 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "lodash": "^4.17.4",
     "nodemon": "^1.12.1",
     "typescript": "^2.6.1",
     "yamljs": "^0.3.0"
   },
   "scripts": {
-    "gen:watch": "nodemon -e mustache bin/gen.js samples/swagger.yml out/a.ts",
-    "tsc:watch": "tsc -w"
+    "gen:watch": "nodemon -e mustache,js -i out -i dist bin/gen.js samples/swagger_mvp.yml out/actions",
+    "tsc:watch": "tsc -w",
+    "use:watch": "nodemon -e dist/use.js dist/use.js"
   }
 }

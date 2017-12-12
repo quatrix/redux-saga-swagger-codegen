@@ -29,6 +29,7 @@
     "emitDecoratorMetadata": true
   },
   "include": [
+    "out/*/*.ts",
     "out/*.ts"
   ],
   "exclude": [
