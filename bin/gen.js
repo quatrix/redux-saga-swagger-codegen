@@ -24,9 +24,13 @@ for (const tag of tags) {
 
   for (const path of Object.keys(spec.paths)) {
     for (const method of Object.keys(spec.paths[path])) {
+      // we're using methodnames as classnames so need to capitalize
+      const opId = spec.paths[path][method].operationId
+      spec.paths[path][method].operationId = opId.charAt(0).toUpperCase() + opId.slice(1)
+
       if (!_.includes(spec.paths[path][method].tags, tag)) {
         delete spec.paths[path][method]
-      }
+      } 
     }
 
     if (!Object.keys(spec.paths[path]).length) {

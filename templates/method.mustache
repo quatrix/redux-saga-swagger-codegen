@@ -1,3 +1,9 @@
+
+
+const __CONST___{{&methodName}}__REQUEST = '{{&className}}//{{&methodName}}//REQUEST'
+const __CONST___{{&methodName}}__SUCCESS = '{{&className}}//{{&methodName}}//SUCCESS'
+const __CONST___{{&methodName}}__FAILURE = '{{&className}}//{{&methodName}}//FAILURE'
+
 export interface {{&methodName}}Request {
   type: '{{&className}}//{{&methodName}}//REQUEST'
   {{#parameters}}
@@ -13,14 +19,14 @@ export interface {{&methodName}}Success {
 }
 
 export interface {{&methodName}}Failure {
-  type: '{{&className}}//{{&methodName}}//FAILURE'
+  type: '{{&className}}//{{&methodName}}//FAILURE' 
   error: any
 }
 
 export class {{&methodName}}Action {
-  static get REQUEST() : string { return '{{&className}}//{{&methodName}}//REQUEST' }
-  static get SUCCESS() : string { return '{{&className}}//{{&methodName}}//SUCCESS' }
-  static get FAILURE() : string { return '{{&className}}//{{&methodName}}//FAILURE' }
+  public static REQUEST = __CONST___{{&methodName}}__REQUEST as typeof __CONST___{{&methodName}}__REQUEST
+  public static SUCCESS = __CONST___{{&methodName}}__SUCCESS as typeof __CONST___{{&methodName}}__SUCCESS
+  public static FAILURE = __CONST___{{&methodName}}__FAILURE as typeof __CONST___{{&methodName}}__FAILURE
 
   static request (parameters: {
     {{#parameters}}
@@ -29,7 +35,7 @@ export class {{&methodName}}Action {
   }) : {{&methodName}}Request {
 
   return {
-    type: '{{&className}}//{{&methodName}}//REQUEST',
+    type: __CONST___{{&methodName}}__REQUEST,
     ...parameters,
   }
   }
@@ -37,15 +43,14 @@ export class {{&methodName}}Action {
   static success (payload: {{#successType}}{{>type}}{{/successType}}) : {{&methodName}}Success {
     return {
         payload,
-        type: '{{&className}}//{{&methodName}}//SUCCESS',
+        type: __CONST___{{&methodName}}__SUCCESS,
     }
   }
 
   static failure (error: any) : {{&methodName}}Failure {
     return {
-        type: '{{&className}}//{{&methodName}}//FAILURE',
+        type: __CONST___{{&methodName}}__FAILURE,
         error,
     }
   }
 }
-
